@@ -95,18 +95,7 @@ async function processUrl(url: string): Promise<void> {
   visitedUrls.add(url);
 
   try {
-    const response: AxiosResponse = await axios.get(url);
-    if (response.status === 200) {
-      const { title, email } = parseResponse(response.data);
-
-      const result: { url: string; title?: string; email?: string } = { url };
-      if (title) result.title = title;
-      if (email) result.email = hashEmail(email);
-
-      console.log(JSON.stringify(result));
-    } else {
-      await retryRequest(url);
-    }
+    await fetchAndProcess(url);
   } catch (error: any) {
     await retryRequest(url, error.message);
   }
@@ -119,22 +108,28 @@ async function retryRequest(
   console.log(`Error: ${errorMessage || "Unknown error"}`);
   setTimeout(async () => {
     try {
-      const response: AxiosResponse = await axios.get(url);
-      if (response.status === 200) {
-        const { title, email } = parseResponse(response.data);
-
-        const result: { url: string; title?: string; email?: string } = { url };
-        if (title) result.title = title;
-        if (email) result.email = hashEmail(email);
-
-        console.log(JSON.stringify(result));
-      } else {
-        logError(url, `Retry failed with status code ${response.status}`);
-      }
+      await fetchAndProcess(url);
     } catch (error: any) {
       logError(url, `Retry failed with error: ${error.message}`);
     }
   }, RETRY_DELAY);
+}
+
+// Abstracted function to handle URL fetching and processing
+async function fetchAndProcess(url: string): Promise<void> {
+  const response: AxiosResponse = await axios.get(url);
+
+  if (response.status === 200) {
+    const { title, email } = parseResponse(response.data);
+
+    const result: { url: string; title?: string; email?: string } = { url };
+    if (title) result.title = title;
+    if (email) result.email = hashEmail(email);
+
+    console.log(JSON.stringify(result));
+  } else {
+    throw new Error(`Request failed with status code ${response.status}`);
+  }
 }
 
 function logError(url: string, message: string): void {
