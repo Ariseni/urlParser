@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Output ESNext code (supports async/await, modules, etc.)
+    "module": "ESNext", // Use ES Modules (import/export)
+    "moduleResolution": "node", // Module resolution strategy (like Node.js)
+    "esModuleInterop": true, // Allow default import syntax for CommonJS modules
+    "strict": true, // Enable all strict type-checking options
+    "resolveJsonModule": true, // Allow importing JSON files
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory for source files
+    "baseUrl": ".", // Base directory for resolving non-relative module names
+  },
+}

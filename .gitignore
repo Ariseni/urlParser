@@ -1,0 +1,15 @@
+#env
+.env
+
+#node_modules
+node_modules/
+
+#compilation
+dist/
+
+#package lock
+package-lock.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

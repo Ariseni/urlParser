@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "parseurl": "npx tsx src/url-parser.ts",
+    "test-parser": "npx tsx src/test-parser.ts",
+    "test-integration": "npx tsx src/test-integration.ts",
+    "build": "npx tsc src/url-parser.ts --outDir dist"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.9.3",
+    "esbuild": "^0.24.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  },
+  "name": "urlparser",
+  "main": "./dist/url-parser.js",
+  "bin": {
+    "parseurl": "./dist/url-parser.js"
+  }
+}
