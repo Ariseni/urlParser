@@ -5,7 +5,6 @@ import * as crypto from "crypto";
 import * as path from "path";
 import * as fs from "fs";
 
-const UNIT_TEST_SCRIPT_NAME = ".spec.ts";
 const IM_SECRET: string = process.env.IM_SECRET || "default_secret";
 const TIMEOUT_BETWEEN_REQUESTS: number = 1000; // 1 second
 const RETRY_DELAY: number = 60000; // 1 minute
@@ -20,39 +19,36 @@ export function extractLastUrl(text: string): string | null {
     return null;
   }
 
-  text = text.replace(/\\[\[\]]/g, "");
+  // Remove escaped brackets (\[ , \] , \\[ , \\])
+  text = text.replace(/\\[\[\]]|\\/g, "");
 
-  let stack: string[] = []; //bracket depth
-  let current: string = ""; //current url candidate
-  let found: boolean = false;
+  let outerContent = "";
+  let stackDepth = 0;
+  let currentCandidate = "";
 
   for (const char of text) {
     if (char === "[") {
-      stack.push(char);
-      if (stack.length === 1) {
-        current = "";
+      if (stackDepth === 0) {
+        currentCandidate = "";
       }
+      stackDepth++;
     } else if (char === "]") {
-      stack.pop();
-      if (stack.length === 0) {
-        //if outer bracket was closed
-        found = true;
+      stackDepth--;
+      if (stackDepth === 0) {
+        outerContent += currentCandidate + " ";
+        currentCandidate = "";
       }
-    } else if (stack.length > 0) {
-      current += char;
+    } else if (stackDepth === 1) {
+      // Only accumulate characters when we're inside outermost brackets
+      currentCandidate += char;
     }
   }
-
-  if (!found || stack.length !== 0) {
+  if (stackDepth !== 0) {
     console.error("No valid URLs found in input.");
     return null;
   }
 
-  // Remove escape characters
-  current = current.replace(/\\+/g, "");
-
-  // Extract all URLs inside the outermost brackets
-  const urls = current.match(/\bhttps?:\/\/[^\s]+|www\.[^\s]+/g);
+  const urls = outerContent.match(/\bhttps?:\/\/[^\s]+|www\.[^\s]+/g);
 
   if (!urls || !urls.length || !isValidUrl(urls[urls.length - 1])) {
     console.error("No valid URLs found in input.");
@@ -171,7 +167,6 @@ const inputFilePath = process.argv[2]; // The file path is passed as the first a
 //don't run on unit test
 if (!process.argv.some((arg) => arg.includes("playwright"))) {
   const resolvedPath = path.resolve(process.cwd(), inputFilePath);
-  console.log(process.cwd(), inputFilePath, process.argv[1]);
   runScript(resolvedPath).catch((error) => {
     console.error("Error in script execution:", error);
     process.exit(1);

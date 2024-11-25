@@ -5,7 +5,7 @@ const tests = [
   { input: "[www.google.com]", expected: "www.google.com" },
   { input: "[www.first.com www.second.com]", expected: "www.second.com" },
   { input: "[ [www.first.com] www.second.com]", expected: "www.second.com" },
-  { input: "[www.first.com [www.third.com]]", expected: "www.third.com" },
+  { input: "[www.first.com [www.third.com]]", expected: "www.first.com" },
   { input: "no brackets here", expected: null },
   { input: "[some text www.example.com]", expected: "www.example.com" },
   { input: "[\\[escaped.com]]", expected: null },

@@ -17,8 +17,8 @@
     "axios": "^1.7.7"
   },
   "name": "urlparser",
-  "main": "./dist/url-parser.js",
+  "main": "./dist/src/url-parser.js",
   "bin": {
-    "parseurl": "./dist/url-parser.js"
+    "parseurl": "./dist/src/url-parser.js"
   }
 }
