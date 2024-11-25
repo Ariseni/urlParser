@@ -1,2 +1,21 @@
 This is a simple URL parser script (as well as CLI command)
 
+Setup:
+
+1. clone
+2. cd urlparser
+3. npm install
+4. npx tsc
+5. sudo npm link
+6. npm install -g
+
+#CLI command
+Run: 
+    parseurl <somefilepath>
+
+example from parseurl folder:
+    parseurl example_input.txt 
+    
+#TESTING 
+Tests: 
+    npx playwright test
